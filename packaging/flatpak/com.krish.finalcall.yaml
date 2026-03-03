@@ -1,0 +1,27 @@
+app-id: com.krish.finalcall
+runtime: org.gnome.Platform
+runtime-version: '47'
+sdk: org.gnome.Sdk
+command: finalcall
+finish-args:
+  - --share=ipc
+  - --socket=fallback-x11
+  - --socket=wayland
+  - --device=dri
+  - --filesystem=home
+
+modules:
+  - name: finalcall
+    buildsystem: simple
+    build-commands:
+      - curl -fsSL https://bun.sh/install | bash
+      - export PATH="$HOME/.bun/bin:$PATH"
+      - bun install --frozen-lockfile
+      - bun run build
+      - cargo build --manifest-path src-tauri/Cargo.toml --release
+      - install -Dm755 src-tauri/target/release/finalcall /app/bin/finalcall
+      - install -Dm644 packaging/arch/finalcall.desktop /app/share/applications/com.krish.finalcall.desktop
+      - install -Dm644 src-tauri/icons/128x128.png /app/share/icons/hicolor/128x128/apps/com.krish.finalcall.png
+    sources:
+      - type: dir
+        path: ../../

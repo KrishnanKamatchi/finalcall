@@ -1,0 +1,31 @@
+# Maintainer: FinalCall Team
+pkgname=finalcall
+pkgver=0.1.0
+pkgrel=1
+pkgdesc="Desktop app to remind employees to stop work on time"
+arch=('x86_64')
+url="https://github.com/REPLACE_ME/finalcall"
+license=('MIT')
+depends=('webkit2gtk-4.1' 'gtk3' 'libappindicator-gtk3' 'sqlite')
+makedepends=('bun' 'rust' 'cargo' 'sqlite')
+source=(
+  "finalcall-${pkgver}.tar.gz"
+  "finalcall.desktop"
+)
+sha256sums=('SKIP' 'SKIP')
+
+build() {
+  cd "$srcdir/finalcall-$pkgver"
+  bun install --frozen-lockfile
+  bun run build
+  cargo clean --manifest-path src-tauri/Cargo.toml
+  CARGO_BUILD_JOBS=1 cargo build --manifest-path src-tauri/Cargo.toml --release -j 1
+}
+
+package() {
+  cd "$srcdir/finalcall-$pkgver"
+
+  install -Dm755 "src-tauri/target/release/finalcall" "$pkgdir/usr/bin/finalcall"
+  install -Dm644 "$srcdir/finalcall.desktop" "$pkgdir/usr/share/applications/finalcall.desktop"
+  install -Dm644 "src-tauri/icons/128x128.png" "$pkgdir/usr/share/icons/hicolor/128x128/apps/finalcall.png"
+}

@@ -1,0 +1,47 @@
+name: finalcall
+base: core24
+version: '0.1.0'
+summary: FinalCall work-life reminder app
+description: |
+  FinalCall is a desktop app that asks daily check-in and reminds users
+  when planned office time is complete.
+
+grade: stable
+confinement: strict
+
+apps:
+  finalcall:
+    command: usr/bin/finalcall
+    desktop: usr/share/applications/finalcall.desktop
+    extensions: [gnome]
+    plugs:
+      - desktop
+      - desktop-legacy
+      - wayland
+      - x11
+      - network
+      - home
+
+parts:
+  finalcall:
+    plugin: nil
+    source: .
+    build-packages:
+      - curl
+      - unzip
+      - pkg-config
+      - build-essential
+      - libwebkit2gtk-4.1-dev
+      - libgtk-3-dev
+      - libayatana-appindicator3-dev
+      - librsvg2-dev
+      - patchelf
+    override-build: |
+      set -eux
+      curl -fsSL https://bun.sh/install | bash
+      export PATH="$HOME/.bun/bin:$PATH"
+      bun install --frozen-lockfile
+      bun run tauri build --bundles deb
+
+      DEB_FILE=$(ls src-tauri/target/release/bundle/deb/finalcall_*_amd64.deb)
+      dpkg-deb -x "$DEB_FILE" "$SNAPCRAFT_PART_INSTALL"
