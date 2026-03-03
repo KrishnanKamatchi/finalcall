@@ -126,3 +126,12 @@ CI workflow:
 - `packaging/arch/` -> Arch assets
 - `packaging/flatpak/` -> Flatpak manifest
 - `snapcraft.yaml` -> Snap config
+
+## Previews
+- Mini windows slap
+  <img width="493" height="446" alt="image" src="https://github.com/user-attachments/assets/d300352d-60a9-4318-977a-604ec5e99aab" />
+
+- Full window slap
+  <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/233f5c00-f178-4d59-bafd-42420e362b6d" />
+
+
